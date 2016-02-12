@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+.chart rect {
+  fill: steelblue;
+}
+
+.chart text {
+  fill: white;
+  font: 10px sans-serif;
+  text-anchor: middle;
+}
+
+</style>
+test
+<svg class="chart"></svg>
+<script src="../projet/d3.min.js" charset="utf-8"></script>
+<script src="../projet/d3.js" charset="utf-8"></script>
+<script>
+//http://127.0.0.1/projet/CHUBlastgrNKX2_3NPM1FLT3.csv
+
+var dataset = [];
+
+var margin = {top: 20, right: 20, bottom: 30, left: 40},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+ 
+var color = d3.scale.ordinal()
+    .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]); 
+
+var x = d3.scale.ordinal()
+    .rangeRoundBands([0, width], .1);
+
+var y = d3.scale.linear()
+    .rangeRound([height, 0]);
+
+d3.csv("http://127.0.0.1/projet/CHUBlastgrNKX2_3NPM1FLT3.csv", function(data)
+{
+  console.log("patient:", data[0]);
+  var alreadyDone = [];
+  var nbGroupe = 0; 
+  var nbGenes = 0;
+  color.domain(data.map(function(d) { // liste des groupes (1/2/3/..)
+
+   
+    if(alreadyDone[d.Groupe] == null){
+        alreadyDone[d.Groupe] = 1;
+        nbGroupe++;
+         //console.log("Groupe: ", "g" + d.Groupe);        
+         return d.Groupe;
+    }
+     return null;
+  })); //met les couleurs pour les groupes
+  x.domain(d3.keys(data[0]).filter(function(key) {         //récupère le nom des gènes pour l'axe x
+    if(key !== "Groupe" && key !== "genespatients"){
+      //console.log("key: ", key);
+      nbGenes++;
+      return key;} }));
+
+  var groupeTmp = "";
+  var dataRanger = new Array();
+  /*for(var i = 0; i < nbGenes; i++){
+    dataRanger[i] = new Array();
+  }*/
+  data.forEach(function(d) {
+      x.domain().map(function(name) {
+      //console.log("name: ", name + ": " + d[name] + " / " + d.Groupe);
+      var test = +d.Groupe;
+        if(typeof  dataRanger[name] === 'undefined'){
+          dataRanger[name] = new Array();
+          for(var i = 0; i < nbGroupe; i++){
+           dataRanger[name][i] = 0;
+          }
+        }
+           
+        dataRanger[name][test-1] += +d[name];
+
+        //dataRanger[test-1][1] ;
+      });
+  });
+
+  for(var key in dataRanger){
+  //dataRanger.forEach(function(d){
+    //(var i = 0; i < nbGroupe; i++){  //d.groupes.length = nbgenes soit 5 avec name: nomgroupe
+   // console.log("dataranger: ", dataRanger);
+    var y0 = 0;
+    var j = 0;
+   
+    j = dataRanger[key][0];
+    for(var i = 1; i < nbGroupe; i++){
+      dataRanger[key][i] += j;
+      j = dataRanger[key][i];
+    }     
+     // console.log("name: ", name + ": " + d[name]);      
+    //console.log("test : ",groupes);
+   //total = groupes[groupes.length - 1].y1;
+    
+  };
+  console.log("dataranger: ", dataRanger);
+
+  //console.log("x: ", x[0]);
+});
+    
+
+
+ //each d is one line of the csv file represented as a json object
+           // console.log("d", d);
+            //console.log("gene patient", d.genespatients);
+ // objectToInspect = Object.getPrototypeOf(objectToInspect);
+//console.log("data", data)
+        //bars(data);
+ //alert(d);
+            //console.log("chr19_pos17941294_SNV_C_JAK3", d.chr19_pos17941294_SNV_C_JAK3);
+          //  month = parse(d.month).getMonth();
+          // console.log("month:", d.month, month)
+            //we slice the dollar sign off then convert to a number with the + sign
+            //slicing works like "$216".slice(1) gives you 216, 
+            //you can also give it a range like "$216 asdf".slice(1,4) gives you 216
+           // p = d.price
+            //price = +p.slice(1)
+           // console.log("price:", p, price);
+           // return {"month": month, "value":price} ;
+
+//d3.csv.parseRows("http://127.0.0.1/projet/CHUBlastgrNKX2_3NPM1FLT3.csv");
+
+//patient_csv();
+
+
+
+//alert(dataset);
+</script>

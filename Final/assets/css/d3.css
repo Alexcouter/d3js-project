@@ -1,0 +1,17 @@
+#hidden-file-upload{
+    display: none;
+}
+
+.uploader{
+    text-align: center;
+}
+
+.chart rect {
+  fill: steelblue;
+}
+
+.chart text {
+  fill: white;
+  font: 10px sans-serif;
+  text-anchor: middle;
+}
